@@ -69,6 +69,16 @@ namespace Pars
         {
             Expression left;
             Token token = Peek();
+            if (token.Type == TokenType.Subtract)
+            {
+                Next();
+                return Expression.Negate(ParseFactory());
+            }
+            if (token.Type == TokenType.Add)
+            {
+                Next();
+                return ParseFactory();
+            }
             if(token.Type == TokenType.Number)
             {
                 Next();
