@@ -22,7 +22,8 @@ namespace RootsSearch
             List<double[]> intervals = SearchIntervals(roots);
             foreach (double[] inter in intervals)
             {
-                roots.Add(double.Round(FindRoot(inter[0], inter[1]), 5));
+                double root = FindRoot(inter[0], inter[1]);
+                if(Math.Abs(_f(root)) < 1e-6) roots.Add(double.Round(root, 5));
             }
             return roots.Select(r => r == 0 ? 0 : r).Distinct().OrderBy(r => r).ToList();
         }

@@ -5,15 +5,32 @@ namespace Inpunter
 {
     public class Inputer
     {
+        private List<Token> _tokens;
 
         public string Input()
         {
             Console.WriteLine("Enter a mathematical Polynomial format (e.g., 2*x + 3):");
             string input = Console.ReadLine();
+            Tokenize(input);
             return input;
         }
 
-        public List<Token> Tokenize(string input)
+        public Func<double, double> CreateFunc()
+        {
+            ParameterExpression param = Expression.Parameter(typeof(double), "x");
+            Parser parser = new Parser(_tokens, 0, param);
+            Expression expr = parser.Parse();
+            var lambda = Expression.Lambda<Func<double, double>>(expr, param);
+            return lambda.Compile();
+        }
+
+        public double[] CreateCoificents()
+        {
+            PolyParser parser = new PolyParser(_tokens, 0);
+            return parser.Parse();
+        }
+
+        private void Tokenize(string input)
         {
             List<Token> tokens = new List<Token>();
             int i = 0;
@@ -53,17 +70,7 @@ namespace Inpunter
                 i++;
             }
             tokens.Add(new Token { Type = TokenType.End });
-            return tokens;
-        }
-
-        public Func<double, double> CreateFunc(string value)
-        {
-            List<Token> tokens = Tokenize(value);
-            ParameterExpression param = Expression.Parameter(typeof(double), "x");
-            Parser parser = new Parser(tokens, 0, param);
-            Expression expr = parser.Parse();
-            var lambda = Expression.Lambda<Func<double, double>>(expr, param);
-            return lambda.Compile();
+            _tokens = tokens;
         }
     }
 
