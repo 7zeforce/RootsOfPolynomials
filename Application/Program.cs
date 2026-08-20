@@ -32,17 +32,24 @@ while (true)
     }
     else
     {
-        Console.WriteLine("Enter the interval [a,b] where the program will find roots:");
-        int[] interval = { int.Parse(Console.ReadLine()), int.Parse(Console.ReadLine()) };
-        RootsSearch.RootsSearch rootsSearch = new RootsSearch.RootsSearch(f, interval);
-        List<double> realRoots = rootsSearch.FindAllRoots();
-        if (realRoots.Count == 0) Console.WriteLine("This function do not have valid real roots");
-        else
+        try
         {
-            Console.WriteLine("Real roots found:");
-            for (int i = 0; i < realRoots.Count; i++)
-                Console.WriteLine($"X_{i + 1} = {realRoots[i]}");
+            Console.WriteLine("Enter the interval [a,b] where the program will find roots:");
+            int[] interval = { int.Parse(Console.ReadLine()), int.Parse(Console.ReadLine()) };
+            RootsSearchBisection.RootsSearchBisection rootsSearchBisection = new RootsSearchBisection.RootsSearchBisection(f, interval);
+            RootsSearchNewton.RootsSearchNewton rootsSearchNewton = new RootsSearchNewton.RootsSearchNewton(f, interval);
+            List<double> realRootsBisection = rootsSearchBisection.FindAllRoots();
+            List<double> realRootsNewton = rootsSearchNewton.FindAllRoots();
+            Console.WriteLine("Roots of bisection:");
+            PrintRealRoots(realRootsBisection);
+            Console.WriteLine("Roots of Newton method:");
+            PrintRealRoots(realRootsNewton);
         }
+        catch
+        {
+            Console.WriteLine("Пиздец");
+        }
+
     }
 
     Console.WriteLine("Press Escape to exit, or any other key to continue...");
@@ -68,5 +75,16 @@ static void PrintComplexRoots(List<Complex> roots)
         else
             Console.WriteLine($"X_{i} = {re} {(im >= 0 ? "+" : "-")} {Math.Abs(im)}i");
         i++;
+    }
+}
+
+static void PrintRealRoots(List<double> realRootsBisection)
+{
+    if (realRootsBisection.Count == 0) Console.WriteLine("This function do not have valid real roots");
+    else
+    {
+        Console.WriteLine("Real roots found:");
+        for (int i = 0; i < realRootsBisection.Count; i++)
+            Console.WriteLine($"X_{i + 1} = {realRootsBisection[i]}");
     }
 }
