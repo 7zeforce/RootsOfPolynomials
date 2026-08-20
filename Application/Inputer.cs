@@ -11,7 +11,7 @@ namespace Inpunter
         {
             Console.WriteLine("Enter a mathematical Polynomial format (e.g., 2*x + 3):");
             string input = Console.ReadLine();
-            Tokenize(input);
+            _tokens = Tokenize(input);
             return input;
         }
 
@@ -30,7 +30,7 @@ namespace Inpunter
             return parser.Parse();
         }
 
-        private void Tokenize(string input)
+        private List<Token> Tokenize(string input)
         {
             List<Token> tokens = new List<Token>();
             int i = 0;
@@ -56,6 +56,17 @@ namespace Inpunter
                     i++;
                     continue;
                 }
+                if(c == 'c' || c == 's' || c == 't')
+                {
+                    string func = "";
+                    while (i < input.Length && char.IsLetter(input[i]))
+                    {
+                        func += input[i];
+                        i++;
+                    }
+                    tokens.Add(new Token { Type = TokenType.Func, Value = func });
+                    continue;
+                }
                 switch (c)
                 {
                     case '+': tokens.Add(new Token { Type = TokenType.Add }); break;
@@ -70,16 +81,16 @@ namespace Inpunter
                 i++;
             }
             tokens.Add(new Token { Type = TokenType.End });
-            _tokens = tokens;
+            return tokens;
         }
     }
 
     public enum TokenType
     {
-        Number, Variable, Add, Subtract, Multiply, Divide, Power, LParen, RParen, End
+        Number, Variable, Add, Subtract, Multiply, Divide, Power, Func, LParen, RParen, End
     }
 
-    public class Token
+    public struct Token
     {
         public TokenType Type { get; set; }
         public string Value { get; set; }

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using Inpunter;
 
 namespace Pars
@@ -101,6 +102,19 @@ namespace Pars
                 Next();
                 left = expr;
             }
+            else if (token.Type == TokenType.Func)
+            {
+                string funcName = token.Value;
+                Next();
+                if (Peek().Type != TokenType.LParen)
+                    throw new Exception($"Expected '(' after function '{funcName}'");
+                Next();
+                Expression arg = ParseExpression();
+                if (Peek().Type != TokenType.RParen)
+                    throw new Exception($"Missing ')' in function '{funcName}'");
+                Next();
+                return BuildFunctionCall(funcName, arg);
+            }
             else
             {
                 throw new Exception("Unexpected token in factor");
@@ -112,6 +126,19 @@ namespace Pars
                 left = Expression.Power(left, right);
             }
             return left;
+        }
+
+        private Expression BuildFunctionCall(string funcName, Expression arg)
+        {
+            MethodInfo method = null;
+            switch (funcName)
+            {
+                case "sin": method = typeof(Math).GetMethod("Sin", new[] { typeof(double) }); break;
+                case "cos": method = typeof(Math).GetMethod("Cos", new[] { typeof(double) }); break;
+                case "tan": method = typeof(Math).GetMethod("Tan", new[] { typeof(double) }); break;
+                default: throw new Exception($"Unknown function '{funcName}'");
+            }
+            return Expression.Call(method, arg);
         }
     }
 
