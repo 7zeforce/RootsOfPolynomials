@@ -2,7 +2,7 @@ using Application;
 
 namespace RootsSearchBisection
 {
-    public class RootsSearchBisection : RootsSearch
+    public sealed class RootsSearchBisection : RootsSearch
     {
         private const double Eps = 1e-9;
 

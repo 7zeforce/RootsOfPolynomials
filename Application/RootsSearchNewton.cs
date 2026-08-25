@@ -2,7 +2,7 @@ using Application;
 
 namespace RootsSearchNewton
 {
-    public class RootsSearchNewton : RootsSearch
+    public sealed class RootsSearchNewton : RootsSearch
     {
         private const double Eps = 1e-9;
         private Func<double, double> _f;
@@ -40,7 +40,7 @@ namespace RootsSearchNewton
             throw new Exception("Newton do not work for this iterations");
         }
 
-        private double GetDerivative(double point, double h = 1e-5)
+        public double GetDerivative(double point, double h = 1e-5)
         {
             return (_f(point+h) - _f(point-h))/(2*h);
         }

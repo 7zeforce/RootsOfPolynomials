@@ -67,6 +67,12 @@ namespace Inpunter
                     tokens.Add(new Token { Type = TokenType.Func, Value = func });
                     continue;
                 }
+                if (c == 'e' || c == 'E')
+                {
+                    tokens.Add(new Token { Type = TokenType.Number, NumberValue = Math.E });
+                    i++;
+                    continue;
+                }
                 switch (c)
                 {
                     case '+': tokens.Add(new Token { Type = TokenType.Add }); break;
